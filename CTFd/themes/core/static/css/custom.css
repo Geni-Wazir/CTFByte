@@ -1,0 +1,15 @@
+.login-img {
+    display: flex;
+    justify-content:none;
+    align-items: stretch;
+    overflow: hidden;
+    margin: 22rem 0rem 0rem 1rem;
+    height: 40rem;
+  }
+
+  .login-img img {
+    object-fit:none;
+    flex-shrink: none;
+    min-width: 100%;
+    min-height: 100%
+  }
