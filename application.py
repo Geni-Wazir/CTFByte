@@ -1,4 +1,5 @@
 from flask import Flask, redirect, render_template, url_for
+from passlib.hash import pbkdf2_sha256
 from wtform_fields import *
 from models import *
 
@@ -22,10 +23,11 @@ def index():
     if reg_form.validate_on_submit():
         username = reg_form.username.data
         password = reg_form.password.data
+        hash_pw = pbkdf2_sha256.hash(password)
 
         with app.app_context():
             # Add User to Database
-            user = User(username=username,password=password)
+            user = User(username=username,password=hash_pw)
             db.session.add(user)
             db.session.commit()
             return redirect(url_for('login'))
