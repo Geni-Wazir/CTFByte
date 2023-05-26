@@ -25,11 +25,6 @@ def index():
         password = reg_form.password.data
 
         with app.app_context():
-            # Check if User already exists
-            user_object = User.query.filter_by(username=username).first()
-            if user_object:
-                return "This Username is already taken by another User"
-            
             # Add User to Database
             user = User(username=username,password=password)
             db.session.add(user)
