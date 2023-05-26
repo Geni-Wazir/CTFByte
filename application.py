@@ -1,4 +1,4 @@
-from flask import Flask, redirect, render_template, url_for
+from flask import Flask, flash, redirect, render_template, url_for
 from passlib.hash import pbkdf2_sha256
 from flask_login import LoginManager, current_user, login_user, login_required, logout_user
 from wtform_fields import *
@@ -39,6 +39,8 @@ def index():
             user = User(username=username,password=hash_pw)
             db.session.add(user)
             db.session.commit()
+
+            flash('Registered Successfully! Please Log in to the App', 'success')
             return redirect(url_for('login'))
     return render_template("index.html", form=reg_form)
 
@@ -49,6 +51,7 @@ def login():
     if login_form.validate_on_submit():
         user_object = User.query.filter_by(username=login_form.username.data).first()
         login_user(user_object)
+        flash('Logged In Successfully!','success')
         return redirect(url_for('chat'))
 
     return render_template("login.html",form=login_form)
@@ -56,14 +59,16 @@ def login():
 @app.route("/chat",methods=['GET','POST'])
 def chat():
     if not current_user.is_authenticated:
-        return "Please Log In before trying to access the chat"
+        flash('Please Log in Before Accessing Chats','danger')
+        return redirect(url_for('login'))
 
     return "Chat with Me!"
 
 @app.route("/logout",methods=['GET'])
 def logout():
     logout_user()
-    return "Logged Out Successfully!!"
+    flash('Logged Out Successfully!','success')
+    return redirect(url_for('login'))
 
 if __name__ == "__main__":
     app.run(debug=True)
