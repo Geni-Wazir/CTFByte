@@ -1,9 +1,11 @@
 from flask import Flask, flash, redirect, render_template, url_for
 from passlib.hash import pbkdf2_sha256
-from flask_login import LoginManager, current_user, login_user, login_required, logout_user
+from flask_login import LoginManager, current_user, login_user, logout_user
+from flask_socketio import SocketIO, send, emit
 from wtform_fields import *
 from models import *
 
+# App Configuration
 app = Flask(__name__)
 app.secret_key = 'secret#Text'
 
@@ -17,6 +19,9 @@ conn_link = "postgresql://" + db_user + ":" + db_pass + "@" + db_host + ":" + db
 
 app.config['SQLALCHEMY_DATABASE_URI'] = conn_link
 db.init_app(app)
+
+# Flask Socket IO Initialization
+socketio = SocketIO(app)
 
 # Configuring Login Manager
 login = LoginManager(app)
@@ -62,7 +67,7 @@ def chat():
         flash('Please Log in Before Accessing Chats','danger')
         return redirect(url_for('login'))
 
-    return "Chat with Me!"
+    return render_template("chat.html", username=current_user.username)
 
 @app.route("/logout",methods=['GET'])
 def logout():
@@ -70,5 +75,9 @@ def logout():
     flash('Logged Out Successfully!','success')
     return redirect(url_for('login'))
 
+@socketio.on('message')
+def message(data):
+    send(data)
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    socketio.run(app, debug=True)
