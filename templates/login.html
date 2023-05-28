@@ -1,18 +1,22 @@
 {% from 'form_helper.html' import displayField %}
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Login {% endblock %}
 
 {% block content %}
-    <h2>Login Now!!</h2>
-    <p>Enter your Username / Password to start the App</p>
+    <h2 class="text-center">Login now!</h2>
+    <p class="text-center">Enter you username/password to start CTFByte</p>
 
-    <form action="{{ url_for('login') }}" method="POST">
-        {{ displayField( form.username, 'Username', autocomplete='off', autofocus=true )}}
-        {{ displayField( form.password, 'Password' )}}
-        <div>
-            {{ form.submit_button }}
+    <form action="{{ url_for('login') }}", method="POST">
+        {{ displayField(form.username, 'Username', autocomplete="off", autofocus=true) }}
+        {{ displayField(form.password, 'Password') }}
+        <div class="form-group text-center">
+            <input type="submit" value="Login" class="btn custom-color">
         </div>
         {{ form.csrf_token }}
     </form>
+
+    <hr>
+
+    <p class="text-center">Have not registered? <a href="{{url_for('index')}}">Register here</a>.</p>
 {% endblock %}
